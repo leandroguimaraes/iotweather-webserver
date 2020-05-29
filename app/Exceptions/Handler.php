@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -50,6 +51,35 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($request->wantsJson())
+        {
+            if ($exception instanceof UnauthorizedHttpException)
+            {
+                return response()->json([
+                    'title' => 'Unauthorized',
+                    'message' => $exception->getMessage()
+                ], 401);
+            }
+            else
+            {
+                /*
+                    ToDo: handle these HTTP errors
+
+                    403
+                    404
+                    419
+                    429
+                    500
+                    503
+                */
+
+                return response()->json([
+                    'title' => 'Error',
+                    'message' => $exception->getMessage()
+                ], 500);
+            }
+        }
+
         return parent::render($request, $exception);
     }
 }
