@@ -49,15 +49,14 @@ class Handler extends ExceptionHandler
      *
      * @throws \Throwable
      */
-    public function render($request, Throwable $exception)
+    public function render($request, Throwable $e)
     {
         if ($request->wantsJson())
         {
-            if ($exception instanceof UnauthorizedHttpException)
+            if ($e instanceof UnauthorizedHttpException)
             {
                 return response()->json([
-                    'title' => 'Unauthorized',
-                    'message' => $exception->getMessage()
+                    'errors' => [ $e->getMessage() ]
                 ], 401);
             }
             else
@@ -74,12 +73,11 @@ class Handler extends ExceptionHandler
                 */
 
                 return response()->json([
-                    'title' => 'Error',
-                    'message' => $exception->getMessage()
+                    'errors' => [ $e->getMessage() ]
                 ], 500);
             }
         }
 
-        return parent::render($request, $exception);
+        return parent::render($request, $e);
     }
 }
