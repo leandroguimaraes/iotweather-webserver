@@ -53,7 +53,21 @@ class Handler extends ExceptionHandler
     {
         if ($request->wantsJson())
         {
-            if ($e instanceof UnauthorizedHttpException)
+            if ($e instanceof \InvalidArgumentException)
+            {
+                $errors = get_object_vars(json_decode($e->getMessage()));
+
+                $result = [];
+                foreach ($errors as $key => $value)
+                {
+                    $result[] = $value[0];
+                }
+
+                return response()->json([
+                    'errors' => $result
+                ], 400);
+            }
+            else if ($e instanceof UnauthorizedHttpException)
             {
                 return response()->json([
                     'errors' => [ $e->getMessage() ]
