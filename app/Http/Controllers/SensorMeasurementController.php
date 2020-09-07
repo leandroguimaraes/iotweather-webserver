@@ -4,25 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\SensorMeasurement;
-use App\Sensor;
+use App\Services\SensorMeasurementService;
 
 class SensorMeasurementController extends Controller
 {
+    protected $_sensorMeasurementService;
+
+    public function __construct(SensorMeasurementService $sensorMeasurementService)
+    {
+        $this->_sensorMeasurementService = $sensorMeasurementService;
+    }
+
     public function create(Request $request)
     {
-        $sensor = Sensor::where('users_id', Auth::user()->id)->first();
-
-        $request->merge(['sensors_id' => $sensor->id]);
-        $request->merge(['lat' => $sensor->lat]);
-        $request->merge(['long' => $sensor->long]);
-
-        if (empty($request->measured_at))
-        {
-            $request->merge(['measured_at' => gmdate('Y-m-d H:i:s')]);
-        }
-
-        SensorMeasurement::create($request->all());
+        $this->_sensorMeasurementService->Create(
+            Auth::user()->id,
+            $request->only([
+                'temperature',
+                'humidity',
+                'measured_at'
+            ])
+        );
 
         return response(null, 204);
     }
