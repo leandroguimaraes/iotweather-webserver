@@ -52,4 +52,9 @@ class SensorMeasurementService
         $interval = $this->_systemConfigService->GetByKey(SystemConfigKeyEnum::MEASUREMENTS_INTERVAL);
         return $interval->value * 1000;
     }
+
+    public function List()
+    {
+        return SensorMeasurement::select('temperature', 'humidity', 'measured_at')->orderByDesc('measured_at')->get();
+    }
 }

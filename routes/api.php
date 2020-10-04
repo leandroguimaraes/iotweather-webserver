@@ -21,3 +21,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['middleware' => 'auth.basic'], function() {
     Route::post('sensorMeasurement', 'SensorMeasurementController@create');
 });
+
+Route::get('sensorMeasurement', 'SensorMeasurementController@list');

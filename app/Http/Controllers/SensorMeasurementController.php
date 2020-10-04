@@ -28,4 +28,9 @@ class SensorMeasurementController extends Controller
 
         return response($this->_sensorMeasurementService->GetInterval(), 200);
     }
+
+    public function list()
+    {
+        return response()->json($this->_sensorMeasurementService->List());
+    }
 }
