@@ -3,16 +3,22 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Validator;
+use App\Enums\SystemConfigKeyEnum;
 use App\Sensor;
 use App\SensorMeasurement;
 
 class SensorMeasurementService
 {
-	protected $_repository;
+    protected $_repository;
+    protected $_systemConfigService;
 
-	public function __construct(SensorMeasurement $repository)
+	public function __construct(
+        SensorMeasurement $repository,
+        SystemConfigService $systemConfigService
+        )
 	{
-		$this->_repository = $repository;
+        $this->_repository = $repository;
+        $this->_systemConfigService = $systemConfigService;
     }
 
     public function Create($user_id, $data)
@@ -39,5 +45,11 @@ class SensorMeasurementService
         }
 
         return SensorMeasurement::create($data);
+    }
+
+    public function GetInterval()
+    {
+        $interval = $this->_systemConfigService->GetByKey(SystemConfigKeyEnum::MEASUREMENTS_INTERVAL);
+        return $interval->value * 1000;
     }
 }

@@ -26,6 +26,6 @@ class SensorMeasurementController extends Controller
             ])
         );
 
-        return response(null, 204);
+        return response($this->_sensorMeasurementService->GetInterval(), 200);
     }
 }
